@@ -28,5 +28,6 @@ module.exports = (sequelize, Sequelize) => {
             targetKey: 'postId'
           });
       };
+      
     return Comment;
   };
