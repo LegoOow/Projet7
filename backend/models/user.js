@@ -1,8 +1,8 @@
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, Sequelize, DataTypes) => {
     const User = sequelize.define(
       "user", {
         id: {
-          type: DataTypes.INT.UNSIGNED,
+          type: Sequelize.INTEGER,
           allowNull: false,
           autoIncrement: true,
           primaryKey: true
@@ -18,9 +18,6 @@ module.exports = (sequelize, Sequelize) => {
         },
         password: {
             type: Sequelize.STRING(40),
-            validate: {
-              is: [a-zA-Z0-9]
-            }
         },
         admin: {
             type: Sequelize.TINYINT(3)

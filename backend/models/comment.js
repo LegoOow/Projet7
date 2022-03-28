@@ -7,10 +7,10 @@ module.exports = (sequelize, Sequelize) => {
           autoIncrement: true,
           primaryKey: true
         },
-        UserId: {
+        userId: {
           type: Sequelize.INT
         },
-        PostId: {
+        postId: {
             type: Sequelize.INT
           },
         date: {
