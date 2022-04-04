@@ -2,13 +2,13 @@ module.exports = (sequelize, Sequelize) => {
     const Post = sequelize.define(
       "post", {
         id: {
-          type: DataTypes.INT.UNSIGNED,
+          type: Sequelize.INTEGER,
           allowNull: false,
           autoIncrement: true,
           primaryKey: true
         },
         userId: {
-          type: Sequelize.INT
+          type: Sequelize.INTEGER
         },
         title: {
           type: Sequelize.STRING(40)
@@ -18,11 +18,5 @@ module.exports = (sequelize, Sequelize) => {
         },
       },     
     );
-    Post.associate = function(models) {
-      Post.belongsTo(models.user, {
-        foreignKey : 'id',
-        targetKey: 'userId'
-      });
-    };
     return Post;
   };
