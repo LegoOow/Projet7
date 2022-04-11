@@ -1,11 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const db = require('../config/db.config');
+const db = require('../models');
+const User = db.users;
 require('dotenv').config();
 
 //Inscription
 exports.signup= (req, res, next) => {
-    db.User.findAll({ where: { email: req.body.email }},
+    User.findAll({ where: { email: req.body.email }},
             (err, results, rows) => {
                 //Verification mail//
                 if (results > 0) {
@@ -18,7 +19,7 @@ exports.signup= (req, res, next) => {
                 bcrypt.hash(req.body.password, 10)
                 .then(cryptedPassword => {
                     //Add to BDD//
-                    db.User.create({
+                    User.create({
                         nom : req.body.nom,
                         prenom : req.body.prenom,
                         email : req.body.email,
@@ -36,7 +37,7 @@ exports.signup= (req, res, next) => {
                         }
                     );
                 })
-                .catch(error => res.status(500).json({error})
+                .catch(error => res.status(500).json({ error })
                 
                 );
             }
@@ -45,7 +46,7 @@ exports.signup= (req, res, next) => {
 
 exports.login = (req, res, next) => {
     //Search users in BDD//
-    db.User.findAll({ where: { email: req.body.email }},
+    User.findAll({ where: { email: req.body.email }},
         (err, results, rows) => {
             //if users find// 
             if (results) {
@@ -78,7 +79,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.getUserProfile = (req, res, next) => {
-    db.User.findAll({ where: { id: req.params.id }},
+    User.findAll({ where: { id: req.params.id }},
         (error, result, rows) => {
             if (error) {
                 return res.status(400).json({ error });
