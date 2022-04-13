@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../models');
-const User = db.users;
+const User = db.user;
 require('dotenv').config();
 
 //Inscription
