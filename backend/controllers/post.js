@@ -1,14 +1,15 @@
 const db = require("../models");
-const Post = db.post;
+const Post = db.posts;
+const User = db.users;
 
 // All post //
 exports.getAllPost = (req, res, next) => {
-    db.query('SELECT users.nom, users.prenom, posts.id, posts.userId, posts.title, posts.content, posts.date AS date FROM users INNER JOIN posts ON users.id = posts.userId ORDER BY date DESC', (error, result, field) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        return res.status(200).json(result);
-    });
+    Post.findAll({
+        include: [{
+            model: User,
+            attributes: ['nom','prenom']
+        }]
+    })
 };
 // NewPost //
 exports.newPost = (req, res, next) => {
