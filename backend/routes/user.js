@@ -4,5 +4,5 @@ module.exports = app => {
     router.post('/signup', user.signup);
     router.post('/login', user.login);
     router.get('/profile/:id', user.getUserProfile);
-    app.use('/api/user', router);
+    app.use('/api/users', router);
   };

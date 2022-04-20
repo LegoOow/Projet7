@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../models');
-const User = db.user;
+const User = db.users;
 require('dotenv').config();
 
 //Inscription
@@ -45,38 +45,34 @@ exports.signup= (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    //Search users in BDD//
-    User.findAll({ where: { email: req.body.email }},
-        (err, results, rows) => {
-            //if users find// 
-            if (results) {
-                //Password verification//
-                bcrypt.compare(req.body.password, results[0].password)
-                    .then(valid => {
-                        //if not valid//
-                        if (!valid) {
-                            res.status(401).json({ message: 'Mot de passe incorrect' });
-                            //if valid, token create//
-                        } else {
-                            res.status(200).json({
-                                userId: results[0].id,
-                                nom: results[0].nom,
-                                prenom: results[0].prenom,
-                                admin: results[0].admin,
-                                token: jwt.sign(
-                                    { userId: results[0].id }, 
-                                    process.env.TOKEN, 
-                                    { expiresIn: '8h' }
-                                )
-                            });
-                        }
-                    });
-            } else {
-                res.status(404).json({ message: 'Utilisateur inconnu' });
-            }
+    User.findOne({
+        where: { email: req.body.email }
+    })
+    .then(user => {
+        if(user) {
+            bcrypt.compare(req.body.password, user.password)
+            .then(valid => {
+                if(!valid) {
+                    return res.status(401).json({ error: 'Mot de passe incorrect' });
+                }
+                res.status(200).json({
+                    userId: user.id,
+                    admin: user.admin,
+                    username: user.username,
+                    token: jwt.sign(
+                        {userId: user.id},
+                        process.env.JWT_SECRET_TOKEN,
+                        {expiresIn: '24h'}
+                    )
+                });
+            })
+            .catch(error => res.status(500).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
+        } else {
+            return res.status(404).json({ error: 'Cet utilisateur n\'existe pas, veuillez créer un compte' })
         }
-    );
-};
+    })
+    .catch(error => res.status(500).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
+}
 
 exports.getUserProfile = (req, res, next) => {
     User.findAll({ where: { id: req.params.id }},

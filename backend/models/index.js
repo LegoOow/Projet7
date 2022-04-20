@@ -16,21 +16,21 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.user = require("./user.js")(sequelize, Sequelize);
-db.post = require("./post.js")(sequelize, Sequelize);
-db.comment = require("./comment.js")(sequelize, Sequelize);
+db.users = require("./user.js")(sequelize, Sequelize);
+db.posts = require("./post.js")(sequelize, Sequelize);
+db.comments = require("./comment.js")(sequelize, Sequelize);
 
-db.comment.hasMany(db.user, {
+db.comments.hasMany(db.users, {
   foreignKey : 'userId',
   targetKey: 'id'
 });
 
-db.comment.hasMany(db.post, {
+db.comments.hasMany(db.posts, {
   foreignKey : 'postId',
   targetKey: 'id'
 });
 
-db.post.hasMany(db.user, {
+db.posts.hasMany(db.users, {
   foreignKey : 'userId',
   sourceKey: 'id'
 });
