@@ -20,19 +20,19 @@ db.users = require("./user.js")(sequelize, Sequelize);
 db.posts = require("./post.js")(sequelize, Sequelize);
 db.comments = require("./comment.js")(sequelize, Sequelize);
 
-db.comments.hasMany(db.users, {
+db.users.hasMany(db.posts, {
   foreignKey : 'userId',
   targetKey: 'id'
 });
 
-db.comments.hasMany(db.posts, {
+db.posts.hasMany(db.comments, {
   foreignKey : 'postId',
   targetKey: 'id'
 });
 
-db.posts.hasMany(db.users, {
+db.users.hasMany(db.comments, {
   foreignKey : 'userId',
-  sourceKey: 'id'
+  targetKey: 'id'
 });
 
 module.exports = db;
