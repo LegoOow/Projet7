@@ -5,11 +5,22 @@ const User = db.users;
 // All post //
 exports.getAllPost = (req, res, next) => {
     Post.findAll({
+        order: [['createdAt', "DESC"]] ,
         include: [{
             model: User,
             attributes: ['nom','prenom']
         }]
     })
+    .then(postFound => {
+        if(postFound) {
+            res.status(200).json(postFound);
+        } else {
+            res.status(404).json({ error: 'Aucun message trouvé' });
+        }
+    })
+    .catch(error => {
+        res.status(500).send({ error: '⚠ Oops, une erreur s\'est produite !' });
+    });
 };
 // NewPost //
 exports.newPost = (req, res, next) => {
@@ -20,6 +31,7 @@ exports.newPost = (req, res, next) => {
         return res.status(201).json({
             message: 'Votre post à été publié !'
         })
+        
     });
 };
 // OnePost //
