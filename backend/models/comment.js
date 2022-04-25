@@ -1,12 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
     const Comment = sequelize.define(
       "comment", {
-        id: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          autoIncrement: true,
-          primaryKey: true
-        },
         userId: {
           type: Sequelize.INTEGER
         },
@@ -18,6 +12,5 @@ module.exports = (sequelize, Sequelize) => {
         },
       },     
     );
-      
     return Comment;
   };

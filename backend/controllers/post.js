@@ -22,19 +22,47 @@ exports.getAllPost = (req, res, next) => {
         res.status(500).send({ error: '⚠ Oops, une erreur s\'est produite !' });
     });
 };
+
 // NewPost //
-exports.newPost = (req, res, next) => {
-    db.query(`INSERT INTO posts VALUES (NULL, '${req.body.userId}', NOW(), '${req.body.content}')`, (error, result, field) => {
-        if (error) {
-            return res.status(400).json({ error });
+exports.newPost = (req, res, next) => {   
+    const content = req.body.content;
+    
+    // Permet de vérifier que tous les champs sont complétés
+    if (content == null || content == '') {
+        return res.status(400).json({ error: 'Tous les champs doivent être renseignés' });
+    } 
+
+    // Permet de contrôler la longueur du titre et du contenu du message
+    if (content.length <= 4) {
+        return res.status(400).json({ error: 'Le contenu du message doit contenir au moins 4 caractères' });
+    }
+    
+    User.findOne({
+        where: { id: req.body.id }
+    })
+    
+    .then(userFound => {
+        if(userFound) {
+            const post = Post.build({
+                content: req.body.content,
+                userId: userFound.id
+            })
+            post.save()
+            .then(() => res.status(201).json({ message: 'Votre message a bien été créé !' }))
+            .catch(error => res.status(400).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
+        } else {
+            return res.status(404).json({ error: 'Utilisateur non trouvé' })
         }
-        return res.status(201).json({
-            message: 'Votre post à été publié !'
-        })
-        
-    });
+    })
+    .catch(error => res.status(500).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
 };
+
 // OnePost //
+exports.getOnePost = (req, res, next) => {
+    Post.findOne({
+        where : { id: req.params.id }
+    })
+};
 exports.getOnePost = (req, res, next) => {
     db.query(`SELECT * FROM posts WHERE posts.id = ${req.params.id}`, (error, result, field) => {
         if (error) {
