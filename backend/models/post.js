@@ -7,9 +7,6 @@ module.exports = (sequelize, Sequelize) => {
         title: {
           type: Sequelize.STRING(40)
         },
-        date: {
-          type: Sequelize.DATE
-        },
       },     
     );
     return Post;

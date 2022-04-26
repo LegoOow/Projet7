@@ -8,10 +8,11 @@ exports.getAllPost = (req, res, next) => {
         order: [['createdAt', "DESC"]] ,
         include: [{
             model: User,
-            attributes: ['nom','prenom']
+            attributes: ['username']
         }]
     })
     .then(postFound => {
+        
         if(postFound) {
             res.status(200).json(postFound);
         } else {
@@ -19,7 +20,7 @@ exports.getAllPost = (req, res, next) => {
         }
     })
     .catch(error => {
-        res.status(500).send({ error: '⚠ Oops, une erreur s\'est produite !' });
+                res.status(500).send({ error: '⚠ Oops, une erreur s\'est produite !' });
     });
 };
 
@@ -38,7 +39,7 @@ exports.newPost = (req, res, next) => {
     }
     
     User.findOne({
-        where: { id: req.body.id }
+        where: { id: req.body.userId }
     })
     
     .then(userFound => {
@@ -60,7 +61,7 @@ exports.newPost = (req, res, next) => {
 // OnePost //
 exports.getOnePost = (req, res, next) => {
     Post.findOne({
-        where : { id: req.params.id }
+        where : { id: req.params.postId }
     })
 };
 exports.getOnePost = (req, res, next) => {
