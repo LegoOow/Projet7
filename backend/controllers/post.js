@@ -11,6 +11,7 @@ exports.getAllPost = (req, res, next) => {
             attributes: ['username']
         }]
     })
+
     .then(postFound => {
         
         if(postFound) {
@@ -22,6 +23,27 @@ exports.getAllPost = (req, res, next) => {
     .catch(error => {
                 res.status(500).send({ error: '⚠ Oops, une erreur s\'est produite !' });
     });
+};
+
+// One post //
+
+exports.getOnePost = (req, res) => {
+    const id = req.params.id;
+    Post.findByPk(id)
+      .then(data => {
+        if (data) {
+          res.send(data);
+        } else {
+          res.status(404).send({
+            message: `Cannot find Post with id=${id}.`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving Post with id=" + id
+        });
+      });
 };
 
 // NewPost //
