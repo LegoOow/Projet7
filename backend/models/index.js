@@ -25,13 +25,18 @@ db.users.hasMany(db.posts, {
   targetKey: 'id'
 });
 
-db.posts.hasMany(db.comments, {
-  foreignKey : 'postId',
+db.posts.belongsTo(db.users, {
+  foreignKey : 'userId',
   targetKey: 'id'
 });
 
-db.users.hasMany(db.comments, {
+db.comments.belongsTo(db.users, {
   foreignKey : 'userId',
+  targetKey: 'id'
+});
+
+db.comments.belongsTo(db.posts, {
+  foreignKey : 'postId',
   targetKey: 'id'
 });
 
