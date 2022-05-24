@@ -60,7 +60,10 @@ exports.createPost = (req, res, next) => {
 // Delete Post //
 
 exports.deletePost = (req, res, next) => {
-    Post.findOne({ where: { id: req.params.id }}) // On trouve l'objet dans la base de données //
+    Post.findOne({ 
+        where: { 
+            id: req.params.id 
+        }}) // On trouve l'objet dans la base de données //
         .then((post) => {
             post.destroy({ where: { id: req.params.id } }) // Méthode //
                 .then(() => res.status(200).json({ message: 'Post supprimé' }))
