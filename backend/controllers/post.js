@@ -45,3 +45,27 @@ exports.getOnePost = (req, res, next) => {
         }))
 };
 
+// Create Post //
+exports.createPost = (req, res, next) => {
+    const post = {
+        userId: req.body.userId,
+        title: req.body.title
+    }; 
+    
+    Post.create(post)
+        .then(() => res.status(201).json({ message: "Message envoyé!" }))
+        .catch(error => res.status(400).json({ error }));
+};
+
+// Delete Post //
+
+exports.deletePost = (req, res, next) => {
+    Post.findOne({ where: { id: req.params.id }}) // On trouve l'objet dans la base de données //
+        .then((post) => {
+            post.destroy({ where: { id: req.params.id } }) // Méthode //
+                .then(() => res.status(200).json({ message: 'Post supprimé' }))
+                .catch(error => res.status(400).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
+};
+
