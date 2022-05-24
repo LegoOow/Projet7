@@ -6,6 +6,6 @@ module.exports = app => {
     router.get("/", userCtrl.getAllPost);
     router.get("/:id", userCtrl.getOnePost);
     router.post('/', userCtrl.createPost);
-    router.delete('/:id', userCtrl.deletePost);
+    router.delete("/:id", userCtrl.deletePost);
     app.use('/api/posts', router);
   };
