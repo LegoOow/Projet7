@@ -73,33 +73,9 @@ exports.deletePost = (req, res, next) => {
 };
 
 // Permet de modifier un message
-exports.modifyPost = (req, res, next) => {
-    
-    console.log('title', req.body.title);
-    const postObject = { title: req.body.title }
-    console.log('body', req.body)
-
-    Post.findOne({
-        where: { id: req.params.id },
-    })
-    .then(postFound => {
-        if(postFound) {
-            Post.update(postObject, {
-                where: { id: req.params.id }
-            })
-            .then(post => res.status(200).json({ message: 'Votre message a bien été modifié !' }))
-            .catch(error => res.status(400).json({ error: '⚠ Oops, une erreur s\'est produite !' }))
-        }
-        else {
-            res.status(404).json({ error: 'Message non trouvé' });
-        }
-    })
-    .catch(error => res.status(500).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
-}
 
 exports.modifyPost = (req, res) => {
     const id = req.params.id;
-    console.log(req.params.id);
     Post.update(req.body, {
       where: { id: id }
     })
