@@ -99,6 +99,7 @@ exports.modifyPost = (req, res, next) => {
 
 exports.modifyPost = (req, res) => {
     const id = req.params.id;
+    console.log(req.params.id);
     Post.update(req.body, {
       where: { id: id }
     })
