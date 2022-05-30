@@ -46,15 +46,32 @@ exports.getOnePost = (req, res, next) => {
 };
 
 // Create Post //
-exports.createPost = (req, res, next) => {
-    const post = {
-        userId: req.body.userId,
-        title: req.body.title
-    }; 
-    
-    Post.create(post)
-        .then(() => res.status(201).json({ message: "Message envoyé!" }))
-        .catch(error => res.status(400).json({ error }));
+
+exports.createPost = (req, res, next) => {   
+
+  const token = req.headers.authorization.split(' ')[1];
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET_TOKEN);
+  const userId = decodedToken.userId;
+  console.log(token)
+
+  User.findOne({
+      where: { id: userId }
+  })
+  
+  .then(userFound => {
+      if(userFound) {
+          const post = Post.build({
+              title: req.body.title,
+              userId: userFound.id
+          })
+          post.save()
+          .then(() => res.status(201).json({ message: 'Votre message a bien été créé !' }))
+          .catch(error => res.status(400).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
+      } else {
+          return res.status(404).json({ error: 'Utilisateur non trouvé' })
+      }
+  })
+  .catch(error => res.status(500).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
 };
 
 // Delete Post //

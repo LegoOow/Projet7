@@ -5,51 +5,48 @@ const User = db.users;
 require('dotenv').config();
 
 //Inscription
-exports.signup= (req, res, next) => {
-    User.findAll({ where: { email: req.body.email }},
-            (err, results, rows) => {
-                //Verification mail//
-                if (results > 0) {
-                    res.status(401).json({
-                        message: 'Email non disponible.'
-                    });
-                    //Si email disponible
-                } else {
-                //Crypt password//
-                bcrypt.hash(req.body.password, 10)
-                .then(cryptedPassword => {
-                    //Add to BDD//
-                    User.create({
-                        nom : req.body.nom,
-                        prenom : req.body.prenom,
-                        email : req.body.email,
-                        password : cryptedPassword,
-                        admin : 0
-                    },
-                        (err, results, fields) => {
-                            if (err) {
-                                console.log(err);
-                                return res.status(400).json("erreur");
-                            }
-                            return res.status(201).json({
-                                message: 'Votre compte a bien été crée !'
-                            });
-                        }
-                    );
-                })
-                .catch(error => res.status(500).json({ error })
-                
-                );
-            }
-    });
+exports.signup = (req, res, next) => {
+    var username = req.body.username;
+    var mail    = req.body.mail;
+    var password = req.body.password;
+
+    // Permet de vérifier que l'utilisateur que l'on souhaite créer n'existe pas déjà
+    User.findOne({
+        attributes: ['mail'],
+        where: {  
+            mail: mail
+        }
+    })
+    .then(userExist => {
+        if(!userExist) {
+            bcrypt.hash(req.body.password, 10)
+            .then(hash => {
+                const user = User.build({
+                    username: req.body.username,
+                    mail: req.body.mail,
+                    password: hash,
+                    admin: 0
+                });
+                user.save()
+                    .then(() => res.status(201).json({ message: 'Votre compte a bien été créé !' }))
+                    .catch(error => res.status(400).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
+            })
+            .catch(error => res.status(500).json({ error: 'Une erreur s\'est produite lors de la création de votre compte' }));
+        } else {
+            return res.status(404).json({ error: 'Cet utilisateur existe déjà' })
+        }
+    })
+    .catch(error => res.status(500).json({ error: '⚠ Oops, une erreur s\'est produite !' }));
 };
 
 exports.login = (req, res, next) => {
     User.findOne({
-        where: { email: req.body.email }
+        where: { mail: req.body.mail }
     })
     .then(user => {
         if(user) {
+            console.log(req.body.password)
+            console.log(user.password)
             bcrypt.compare(req.body.password, user.password)
             .then(valid => {
                 if(!valid) {
