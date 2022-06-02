@@ -6,15 +6,12 @@ require('dotenv').config();
 
 //Inscription
 exports.signup = (req, res, next) => {
-    var username = req.body.username;
-    var mail    = req.body.mail;
-    var password = req.body.password;
-
+    
     // Permet de vérifier que l'utilisateur que l'on souhaite créer n'existe pas déjà
     User.findOne({
         attributes: ['mail'],
         where: {  
-            mail: mail
+            mail: req.body.mail
         }
     })
     .then(userExist => {
