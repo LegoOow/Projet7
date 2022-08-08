@@ -1,9 +1,9 @@
 <template>
-  <router-view/>
   <nav>
     <router-link to="/">Account</router-link> |
-    <router-link to="/register">Sign in</router-link>
+    <router-link to="/register">Sign up</router-link>
   </nav>
+  <router-view/>
 </template>
 
 <style lang="scss">
